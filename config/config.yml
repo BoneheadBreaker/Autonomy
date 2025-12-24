@@ -1,0 +1,7 @@
+general:
+  prefix: "."
+  status_type: "watching"
+  status_text: "Open source projects!"
+welcome:
+  channel_id: 1254318703554723905
+  message: "Welcome {user} im Autonomy an open source free discord bot!"
