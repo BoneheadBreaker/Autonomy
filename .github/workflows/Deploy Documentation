@@ -3,14 +3,14 @@ name: Deploy MkDocs Site
 on:
   push:
     branches:
-      - main  # triggers on every push to main
+      - main  # triggers on pushes to main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out the repository
+      # 1. Checkout repository
       - name: Checkout repo
         uses: actions/checkout@v3
 
@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.x'
 
-      # 3. Install MkDocs and theme (if using Material theme)
+      # 3. Install MkDocs and theme
       - name: Install dependencies
         run: |
           pip install mkdocs
@@ -28,9 +28,7 @@ jobs:
 
       # 4. Deploy MkDocs site
       - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy \
-             --config-file documentation/mkdocs.yml \
-             --force \
-             --remote-branch gh-pages
+        working-directory: documentation
+        run: mkdocs gh-deploy --force --remote-branch gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
