@@ -1,0 +1,42 @@
+[33mcommit d5226a2ae6b2c580d131c6c5bb21cd65ce0c73b7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: BoneheadBreaker <bhb@tutamail.com>
+Date:   Tue Mar 10 17:30:29 2026 +1100
+
+    added a warn and database and started work on documentation
+
+[33mcommit 5762c63e6e07fe71e50924582fd4d06705d04df7[m
+Merge: 4ca1d0f d9cab93
+Author: BoneheadBreaker <bhb@tutamail.com>
+Date:   Tue Mar 10 17:28:12 2026 +1100
+
+    Merge branch 'main' of https://github.com/BoneheadBreaker/Autonomy
+
+[33mcommit 4ca1d0f19f2d52dfe1af9c2a9b703e6a36cf365c[m
+Author: BoneheadBreaker <bhb@tutamail.com>
+Date:   Tue Mar 10 17:24:45 2026 +1100
+
+    added a warn command and database
+
+[33mcommit d9cab93bc80b2acefc26ef3bcf4c203e90afe7c5[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: BoneheadBreaker <bhb@tutamail.com>
+Date:   Fri Dec 26 11:05:11 2025 +1100
+
+    Update README to add a small description of the project
+
+[33mcommit d8a682401205acd0921d7d985eed738a676be805[m
+Author: BoneheadBreaker <bhb@tutamail.com>
+Date:   Wed Dec 24 15:26:01 2025 +1100
+
+    More info in readme soon
+
+[33mcommit 12941684518efdb8e03dac22f951a45b2d31954f[m
+Author: BoneheadBreaker <bhb@tutamail.com>
+Date:   Wed Dec 24 15:09:58 2025 +1100
+
+    inital commit
+
+[33mcommit 9c4db780773996413128edd89409426ca5193ee1[m
+Author: BoneheadBreaker <bhb@tutamail.com>
+Date:   Wed Dec 24 14:37:50 2025 +1100
+
+    inital commit
