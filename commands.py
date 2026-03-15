@@ -4,14 +4,17 @@ from db import Database
 
 db = Database('bot.db')
 
-db.create_table("test", "text TEXT")
-db.create_table("warnings", "user", "reason")
+# Tables
+db.create_table("test", "guild_id INTEGER", "text TEXT")
+db.create_table("warnings", "guild_id INTEGER", "user INTEGER", "reason TEXT")
+db.create_table("DB_ACCESS_TOKENS", "TOKENS TEXXT")  # global table
 
 def handle_commands(bot):
+
     @bot.hybrid_command()
     async def ping(ctx):
         await ctx.send("Pong!")
-    
+
     @bot.hybrid_command(name="documentation", description="display the link for the documentation")
     async def get_documentation(ctx: commands.Context):
         await ctx.send("https://example.com")
@@ -21,34 +24,60 @@ def handle_commands(bot):
         await ctx.channel.send(text)
         if ctx.interaction is None:
             await ctx.message.delete()
-        elif ctx.interaction is not None:
-                    await ctx.interaction.response.send_message("Sending..", ephemeral=True)
-         
+        else:
+            await ctx.interaction.response.send_message("Sending..", ephemeral=True)
+
+    # Database commands
     @bot.hybrid_group(name="database", description="edit the database")
     async def database_command(ctx: commands.Context):
-         if ctx.invoked_subcommand is None:
-              await ctx.send("Invalid use, please pass a valid subcommand")    
-                
+        if ctx.invoked_subcommand is None:
+            await ctx.send("Invalid use, please pass a valid subcommand")
+
     @database_command.command(name="add", description="add to an existing table")
-    async def database_add_command(ctx: commands.Context, table, data):   
+    async def database_add_command(ctx: commands.Context, token, table, data):
+
+        if not db.exists("DB_ACCESS_TOKENS", "TOKENS", token):
+            await ctx.send("Invalid database token.")
+            return
+
         if data.startswith('"') and data.endswith('"'):
-             data = data[1:-1]
+            data = data[1:-1]
 
         values = [v.strip() for v in data.split(",")]
 
-        db.add(table, *values)
-        await ctx.send(f"added {data} to the database")
-    
-    @database_command.command(name="create", description="create a table")
-    async def database_create_command(ctx: commands.Context, table, columns):
-         db.create_table(table, columns)    
+        if table in ["test", "warnings"]:
+            db.add(table, ctx.guild.id, *values)
+        else:
+            db.add(table, *values)
 
+        await ctx.send(f"Added {data} to the database")
+
+    @database_command.command(name="create", description="create a table")
+    async def database_create_command(ctx: commands.Context, token, table, columns):
+
+        if not db.exists("DB_ACCESS_TOKENS", "TOKENS", token):
+            await ctx.send("Invalid database token.")
+            return
+
+        db.create_table(table, columns)
+        await ctx.send(f"Table `{table}` created")
+
+    # Warning system
     @bot.hybrid_group(name="warn", description="warn a user")
     async def warn_command(ctx: commands.Context):
         if ctx.invoked_subcommand is None:
-            await ctx.send("Invalid use, please pass a valid subcommand") 
-    
+            await ctx.send("Invalid use, please pass a valid subcommand")
+
     @warn_command.command(name="add", description="add a warning to a user")
     async def warn_add_command(ctx: commands.Context, user: discord.Member, *, reason: str):
-        db.add("warnings", user.id, reason)
+        db.add("warnings", ctx.guild.id, user.id, reason)
         await ctx.send(f"{user.mention} was warned for {reason}")
+
+    @warn_command.command(name="remove", description="Remove a warning from a user")
+    async def warn_remove_command(ctx: commands.Context, user: discord.Member):
+        db.delete("warnings", {
+            "guild_id": ctx.guild.id,
+            "user": user.id
+        })
+        await ctx.send(f"Removed Warnings for {user.mention}")
+        
