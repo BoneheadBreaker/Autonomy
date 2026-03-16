@@ -17,7 +17,7 @@ def handle_commands(bot):
 
     @bot.hybrid_command(name="documentation", description="display the link for the documentation")
     async def get_documentation(ctx: commands.Context):
-        await ctx.send("https://example.com")
+        await ctx.send("https://boneheadbreaker.github.io/Autonomy/")
 
     @bot.hybrid_command(name="say", description="talk as the bot!")
     async def say(ctx: commands.Context, text):
