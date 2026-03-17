@@ -1,38 +1,61 @@
 import discord
 from discord.ext import commands
+from db import Database
+
+db = Database('bot.db')
 
 def logs(bot, CONFIG):
     @bot.event
     async def on_message_delete(message):
-        if if_log_id(CONFIG) == True:
-            if CONFIG["logging"]["deleted_messages"]:
-                if message.channel is None:
-                    return
+        if message.guild is None:
+            return
 
-                embed = discord.Embed(title="Log - Message deleted", description=f"Message Content: {message.system_content} Author: {message.author}", colour=0xff0000)
+        log_channel = get_log_channel(bot, message.guild.id)
+        if log_channel is None:
+            return
 
-                await message.channel.send(embed=embed)
+        if CONFIG["logging"]["deleted_messages"]:
+            embed = discord.Embed(
+                title="Log - Message deleted",
+                description=f"Message Content: {message.system_content}\nAuthor: {message.author}",
+                colour=0xff0000
+            )
+
+            await log_channel.send(embed=embed)
 
     @bot.event
     async def on_message_edit(old_message, new_message):
-        if if_log_id(CONFIG) == True:
-            if CONFIG["logging"]["edited_messages"]:
-                if old_message.channel is None or new_message.channel is None:
-                    return
-                
-                if old_message.author == bot.user:
-                    return
+        if old_message.guild is None:
+            return
 
-                old_message_embed = discord.Embed(title="Log - Message edited old content", description=f"Old Message Content: {old_message.system_content} Author: {old_message.author}")
+        if old_message.author == bot.user:
+            return
 
-                new_message_embed = discord.Embed(title="Log - Message edited new content", description=f"New Message Content: {new_message.system_content} Author: {new_message.author}")
+        log_channel = get_log_channel(bot, old_message.guild.id)
+        if log_channel is None:
+            return
 
-                await old_message.channel.send(embed=old_message_embed)
-                await new_message.channel.send(embed=new_message_embed)
+        if CONFIG["logging"]["edited_messages"]:
+            old_embed = discord.Embed(
+                title="Old Message",
+                description=f"{old_message.system_content}\nAuthor: {old_message.author}",
+                colour=0xffa500
+            )
 
-def if_log_id(CONFIG):
-    print(CONFIG["logging"]["channel_id"])
-    if CONFIG["logging"]["channel_id"] == "" or CONFIG["logging"]["channel_id"] is None: # if no id is provided
-        return False
-    else:
-        return True
+            new_embed = discord.Embed(
+                title="New Message",
+                description=f"{new_message.system_content}\nAuthor: {new_message.author}",
+                colour=0x00ff00
+            )
+
+            await log_channel.send(embed=old_embed)
+            await log_channel.send(embed=new_embed)
+
+    def get_log_channel(bot, guild_id):
+        rows = db.get("logging_channel", {"guild_id": guild_id})
+
+        if not rows:
+            return None
+
+        channel_id = int(rows[0][1])  # (guild_id, channel_id)
+        return bot.get_channel(channel_id)

@@ -7,7 +7,8 @@ db = Database('bot.db')
 # Tables
 db.create_table("test", "guild_id INTEGER", "text TEXT")
 db.create_table("warnings", "guild_id INTEGER", "user INTEGER", "reason TEXT")
-db.create_table("DB_ACCESS_TOKENS", "TOKENS TEXXT")  # global table
+db.create_table("DB_ACCESS_TOKENS", "TOKENS TEXT")  # global table to store private tokens only handed to trusted people
+db.create_table("logging_channel", "guild_id INTEGER", "channel TEXT")
 
 def handle_commands(bot):
 
@@ -81,3 +82,13 @@ def handle_commands(bot):
         })
         await ctx.send(f"Removed Warnings for {user.mention}")
         
+    # config command
+    @bot.hybrid_group(name="config", description="Update the config for the bot")
+    async def config_command(ctx: commands.Context):
+        if ctx.invoked_subcommand is None:
+            await ctx.send("Invalid use, please pass a valid subcommand")
+    
+    @config_command.command(name="logging_channel", description="set the channel to send logs to")
+    async def config_log_channel_command(ctx: commands.Context, channel: discord.TextChannel):
+        db.add("logging_channel", ctx.guild.id, channel.id)
+        await ctx.send(f"logging channel id set to {channel.id} which is the {channel} channel")
