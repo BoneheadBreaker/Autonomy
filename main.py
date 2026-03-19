@@ -60,17 +60,4 @@ async def on_ready():
 
     print("Applied presence from config:", status_type, status_text)
 
-@bot.event
-async def on_member_join(member: discord.Member):
-    channel_id = CONFIG["welcome"]["channel_id"]
-    message_template = CONFIG["welcome"]["message"]
-
-    if channel_id:
-        print(member.guild)
-        channel = member.guild.get_channel(channel_id)
-        print("Channel found:", channel)
-        if channel:
-            await channel.send(message_template.format(user=member.mention))
-
-
 bot.run(DISCORD_TOKEN)

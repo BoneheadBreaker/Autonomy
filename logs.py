@@ -16,9 +16,9 @@ def logs(bot, CONFIG):
 
         if CONFIG["logging"]["deleted_messages"]:
             embed = discord.Embed(
-                title="Log - Message deleted",
-                description=f"Message Content: {message.system_content}\nAuthor: {message.author}",
-                colour=0xff0000
+                title = "Log - Message deleted",
+                description = f"Message Content: {message.system_content}\nAuthor: {message.author}",
+                colour = 0xff0000
             )
 
             await log_channel.send(embed=embed)
@@ -50,6 +50,24 @@ def logs(bot, CONFIG):
 
             await log_channel.send(embed=old_embed)
             await log_channel.send(embed=new_embed)
+
+    @bot.event
+    async def on_member_join(member: discord.member):
+        guild_id = member.guild.id
+
+        joined_at_timestamp = int(member.joined_at.timestamp())
+
+        log_channel = get_log_channel(bot, guild_id)
+        if log_channel is None:
+            return
+
+        if CONFIG["logging"]["member_join"]:
+            member_join_embed = discord.Embed(
+                title = "Log - Member join",
+                description = f"Member: {member.mention} their user id is: {member.id} they joined: <t:{joined_at_timestamp}:R>)"
+            )
+
+            await log_channel.send(embed=member_join_embed)
 
     def get_log_channel(bot, guild_id):
         rows = db.get("logging_channel", {"guild_id": guild_id})
