@@ -68,6 +68,23 @@ def logs(bot, CONFIG):
             )
 
             await log_channel.send(embed=member_join_embed)
+    
+    @bot.event
+    async def on_member_remove(member: discord.member):
+        guild_id = member.guild.id
+
+        log_channel = get_log_channel(bot, guild_id)
+        if log_channel is None:
+            return
+
+        if CONFIG["logging"]["member_remove"]:
+            member_remove_embed = discord.Embed(
+                title = "Log - Member Leave/Remove",
+                description = f"Member: {member.mention} left the server, their user id is: {member.id}",
+                colour = 0xff0000
+            )
+
+            await log_channel.send(embed=member_remove_embed)
 
     def get_log_channel(bot, guild_id):
         rows = db.get("logging_channel", {"guild_id": guild_id})
