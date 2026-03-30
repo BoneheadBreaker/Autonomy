@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from db import Database
+import re
 
 db = Database('bot.db')
 
@@ -85,6 +86,30 @@ def logs(bot, CONFIG):
             )
 
             await log_channel.send(embed=member_remove_embed)
+
+    @bot.event
+    async def on_message(message):
+        guild_id = message.guild.id
+
+        log_channel = get_log_channel(bot, guild_id)
+
+        if CONFIG["logging"]["invites"]:
+            if message.author == bot.user:
+                return
+
+            INVITE_REGEX = re.compile(r'discord(?:.gg|.com/)/.+$')
+
+            invite_links = re.findall(INVITE_REGEX, message.content)
+
+            invite_detected_embed = discord.Embed(
+                title = "Log - Invite Posted",
+                description = f"{message.author} posted 1 or more discord invites in {message.channel}",
+                colour = 0xFFA500
+            )
+
+            await log_channel.send(embed=invite_detected_embed)
+
+
 
     def get_log_channel(bot, guild_id):
         rows = db.get("logging_channel", {"guild_id": guild_id})

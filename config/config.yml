@@ -10,3 +10,4 @@ logging:
   edited_messages: true
   member_join: true
   member_remove: true
+  invites: true
