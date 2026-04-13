@@ -97,17 +97,23 @@ def logs(bot, CONFIG):
             if message.author == bot.user:
                 return
 
-            INVITE_REGEX = re.compile(r'discord(?:.gg|.com/)/.+$')
-
-            invite_links = re.findall(INVITE_REGEX, message.content)
-
-            invite_detected_embed = discord.Embed(
-                title = "Log - Invite Posted",
-                description = f"{message.author} posted 1 or more discord invites in {message.channel}",
-                colour = 0xFFA500
+            INVITE_REGEX = re.compile(
+                r"(?:https?://)?(?:www\.)?"
+                r"(?:discord\.gg|discord\.com/invite|discordapp\.com/invite|discordapp\.com)/"
+                r"[A-Za-z0-9-]+",
+                re.IGNORECASE
             )
 
-            await log_channel.send(embed=invite_detected_embed)
+            invite_links = re.findall(INVITE_REGEX, message.content)
+            if invite_links:
+                links_found = len(invite_links)
+                invite_detected_embed = discord.Embed(
+                    title = "Log - Invite Posted",
+                    description = f"{message.author} posted {links_found} discord invites in {message.channel}",
+                    colour = 0xFFA500
+                )
+
+                await log_channel.send(embed=invite_detected_embed)
 
 
 
