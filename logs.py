@@ -89,6 +89,8 @@ def logs(bot, CONFIG):
 
     @bot.event
     async def on_message(message):
+        if message.guild is None:
+            return
         guild_id = message.guild.id
 
         log_channel = get_log_channel(bot, guild_id)
@@ -114,6 +116,8 @@ def logs(bot, CONFIG):
                 )
 
                 await log_channel.send(embed=invite_detected_embed)
+
+        await bot.process_commands(message)
 
 
 

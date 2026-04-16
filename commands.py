@@ -21,12 +21,14 @@ def handle_commands(bot):
         await ctx.send("https://boneheadbreaker.github.io/Autonomy/")
 
     @bot.hybrid_command(name="say", description="talk as the bot!")
-    async def say(ctx: commands.Context, text):
-        await ctx.channel.send(text)
-        if ctx.interaction is None:
-            await ctx.message.delete()
-        else:
+    @commands.has_permissions(manage_messages=True)
+    async def say(ctx: commands.Context, *, text: str):
+        if ctx.interaction:
             await ctx.interaction.response.send_message("Sending..", ephemeral=True)
+            await ctx.channel.send(text)
+        else:
+            await ctx.send(text)
+            await ctx.message.delete()
 
     # Database commands
     @bot.hybrid_group(name="database", description="edit the database")
