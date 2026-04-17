@@ -72,11 +72,13 @@ def handle_commands(bot):
             await ctx.send("Invalid use, please pass a valid subcommand")
 
     @warn_command.command(name="add", description="add a warning to a user")
+    @commands.has_permissions(moderate_members=True)
     async def warn_add_command(ctx: commands.Context, user: discord.Member, *, reason: str):
         db.add("warnings", ctx.guild.id, user.id, reason)
         await ctx.send(f"{user.mention} was warned for {reason}")
 
     @warn_command.command(name="remove", description="Remove a warning from a user")
+    @commands.has_permissions(moderate_members=True)
     async def warn_remove_command(ctx: commands.Context, user: discord.Member):
         db.delete("warnings", {
             "guild_id": ctx.guild.id,
@@ -91,6 +93,7 @@ def handle_commands(bot):
             await ctx.send("Invalid use, please pass a valid subcommand")
     
     @config_command.command(name="logging_channel", description="set the channel to send logs to")
+    @commands.has_permissions(administrator=True)
     async def config_log_channel_command(ctx: commands.Context, channel: discord.TextChannel):
         db.add("logging_channel", ctx.guild.id, channel.id)
         await ctx.send(f"logging channel id set to {channel.id} which is the {channel} channel")
