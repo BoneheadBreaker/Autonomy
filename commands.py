@@ -97,3 +97,15 @@ def handle_commands(bot):
     async def config_log_channel_command(ctx: commands.Context, channel: discord.TextChannel):
         db.add("logging_channel", ctx.guild.id, channel.id)
         await ctx.send(f"logging channel id set to {channel.id} which is the {channel} channel")
+
+    @bot.hybrid_command(name="ban", description="ban a member")
+    @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
+    async def ban(ctx, member: discord.Member, *, reason="No reason provided"):
+        try:
+            await member.ban(reason=reason)
+            await ctx.send(f"Banned {member.mention} for {reason}")
+        except discord.Forbidden:
+            await ctx.send(f"I do not have permission to ban {member}")
+        except discord.HTTPException:
+            await ctx.send(f"Failed to ban {member}")
