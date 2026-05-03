@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
 from db import Database
+import random
 
 db = Database('bot.db')
 
@@ -109,3 +110,11 @@ def handle_commands(bot):
             await ctx.send(f"I do not have permission to ban {member}")
         except discord.HTTPException:
             await ctx.send(f"Failed to ban {member}")
+        
+    @bot.hybrid_command(name="coinflip", description="flip a coin!")
+    async def coinflip(ctx):
+        coinflip = random.randint(0, 1)
+        if coinflip == 1:
+            await ctx.send("Heads!")
+        else:
+            await ctx.send("Tails!")
