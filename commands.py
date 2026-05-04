@@ -10,6 +10,18 @@ db.create_table("test", "guild_id INTEGER", "text TEXT")
 db.create_table("warnings", "guild_id INTEGER", "user INTEGER", "reason TEXT")
 db.create_table("DB_ACCESS_TOKENS", "TOKENS TEXT")  # global table to store private tokens only handed to trusted people
 db.create_table("logging_channel", "guild_id INTEGER", "channel TEXT")
+db.create_table("commands_is_enabled", "guild_id INTEGER", "command TEXT", "is_enabled BOOLEAN") # Table for all commands to see if they are enabled in that server
+
+def is_command_enabled(guild_id: int, command_name: str):
+    result = db.get(
+        "commands_is_enabled",
+        {"guild_id": guild_id, "command": command_name}
+    )
+
+    if not result:
+        return True  # default = enabled
+    
+    return bool(result[0][2])
 
 def handle_commands(bot):
 
@@ -99,6 +111,21 @@ def handle_commands(bot):
         db.add("logging_channel", ctx.guild.id, channel.id)
         await ctx.send(f"logging channel id set to {channel.id} which is the {channel} channel")
 
+    @config_command.command(name="coinflip", description="Enable or disable coinflip")
+    @commands.has_permissions(administrator=True)
+    async def config_coinflip_enabled(ctx: commands.Context, is_enabled: bool):
+        # Remove old entry if exists
+        db.delete("commands_is_enabled", {
+            "guild_id": ctx.guild.id,
+            "command": "coinflip"
+        })
+
+        # Add new value
+        db.add("commands_is_enabled", ctx.guild.id, "coinflip", is_enabled)
+
+        await ctx.send(f"Coinflip command enabled: {is_enabled}")
+
+
     @bot.hybrid_command(name="ban", description="ban a member")
     @commands.has_permissions(ban_members=True)
     @commands.guild_only()
@@ -113,6 +140,10 @@ def handle_commands(bot):
         
     @bot.hybrid_command(name="coinflip", description="flip a coin!")
     async def coinflip(ctx):
+        if not is_command_enabled(ctx.guild.id, "coinflip"):
+            await ctx.send("This command is disabled in this server, if you believe this is an error, please contact a server moderator, moderators can use /config to change this")
+            return
+
         coinflip = random.randint(0, 1)
         if coinflip == 1:
             await ctx.send("Heads!")
