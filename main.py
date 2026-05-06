@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from commands import handle_commands
 from logs import logs
 from ConfigLoader import load_config
+from bot_filter import ImageFilter
 
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
@@ -36,7 +37,9 @@ class MyBot(commands.Bot):
 bot = MyBot()
 
 handle_commands(bot)
-logs(bot, CONFIG=CONFIG)
+image_filter = ImageFilter("scam_hashes.txt", threshold=5)
+logs(bot, CONFIG=CONFIG, image_filter=image_filter)
+
 
 # Events
 @bot.event

@@ -14,7 +14,7 @@ def get_image_hash(url):
     # Open image
     img = Image.open(BytesIO(response.content))
 
-    # Generate perceptual hash (phash is a good default)
+    # Generate perceptual hash
     phash = imagehash.phash(img)
 
     return phash

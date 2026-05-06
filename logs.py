@@ -5,7 +5,7 @@ import re
 
 db = Database('bot.db')
 
-def logs(bot, CONFIG):
+def logs(bot, CONFIG, image_filter):
     @bot.event
     async def on_message_delete(message):
         if message.guild is None:
@@ -94,6 +94,18 @@ def logs(bot, CONFIG):
         guild_id = message.guild.id
 
         log_channel = get_log_channel(bot, guild_id)
+
+        if image_filter:
+            urls = image_filter.extract_urls(message)
+
+            for url in urls:
+                match, distance = image_filter.check_url(url)
+
+                if match:
+                    await message.delete()
+                    print(f"[ImageFilter] Deleted (distance={distance})")
+                    return  # stop everything after deletion
+
 
         if CONFIG["logging"]["invites"]:
             if message.author == bot.user:
