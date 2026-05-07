@@ -8,11 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://mydomain.org/mysite/setup/">
+        <link rel="canonical" href="https://mydomain.org/mysite/developer_keys/">
       
       
-        <link rel="prev" href="../developer_keys/">
+        <link rel="prev" href="../dataset/">
       
+      
+        <link rel="next" href="../setup/">
       
       
         
@@ -23,7 +25,7 @@
     
     
       
-        <title>Setup - Autonomy Documentation</title>
+        <title>Developer keys - Autonomy Documentation</title>
       
     
     
@@ -63,6 +65,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#developer-keys" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -95,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Setup
+              Developer keys
             
           </span>
         </div>
@@ -269,10 +276,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../developer_keys/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer keys
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -288,6 +322,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-are-developer-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What are developer keys?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-do-developer-keys-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What do developer keys do?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-do-i-get-my-own-developer-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I get my own developer key?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-developer-keys-do-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What developer keys DO NOT DO
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -296,17 +394,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../setup/" class="md-nav__link">
         
   
   
@@ -322,7 +413,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -344,6 +434,60 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-are-developer-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What are developer keys?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-do-developer-keys-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What do developer keys do?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-do-i-get-my-own-developer-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I get my own developer key?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-developer-keys-do-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What developer keys DO NOT DO
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -360,12 +504,24 @@
 
 
 
-  <h1>Setup</h1>
-
-<p>Autonomy is still being developed there is no public hosted version</p>
-<p>You can add Autonomy to your server so you are ready when it goes public
-https://discord.com/oauth2/authorize?client_id=1481512387419836416</p>
-<p>Theres no set release date</p>
+<h1 id="developer-keys">Developer keys</h1>
+<p><strong>Developer keys are planned to be phased out in the future</strong></p>
+<h2 id="what-are-developer-keys">What are developer keys?</h2>
+<p>Developer keys are keys stored in the bots database, they are only given out to trusted developers</p>
+<h2 id="what-do-developer-keys-do">What do developer keys do?</h2>
+<p>Developer keys allow anyone with the key to modify certain things about the bot,</p>
+<p>For example a developer key means you can edit parts of the database.</p>
+<p>Developer keys are meant for quick fixes or quickly helping a user
+Developer keys are often changed quickly after use</p>
+<h2 id="how-do-i-get-my-own-developer-key">How do I get my own developer key?</h2>
+<p>Developer keys are not just given out, they require years of trust</p>
+<p>Their is no single way to get a developer key, they are only given out in rare cases</p>
+<h2 id="what-developer-keys-do-not-do">What developer keys DO NOT DO</h2>
+<p>Developer keys DO NOT: <br />
+    Allow people to attack your server <br />
+    Give people full control over the bot <br />
+    Give access to personal infomation  <br />
+    Give access to directly modify Autonomy's code     </p>
 
 
 
