@@ -1,17 +1,10 @@
 # Autonomy
 
-The most customizable self hosting discord bot.
+Advanced Utility bot
 
 designed to be user friendly, without sacraficing customizability
 ## Setup
 > **Warning**  
-Autonomy's documentation is still a work in progress, especially setup guides
+Autonomy's documentation is still a work in progress
 
-
-Autonomys documentation is still a work in progress
-
-For a more detailed guide checkout the [Setup guide](setup.md)
-
-`git clone https://github.com/BoneheadBreaker/Autonomy.git` - clone the github repo
-
-guide still a work in progress.
+Checkout the [Setup](setup.md) guide to learn how to [Setup](setup.md) Autonomy

@@ -52,6 +52,10 @@ class UtilityCog(commands.Cog):
             await ctx.send(text)
             await ctx.message.delete()
 
+    @commands.hybrid_command()
+    @command_enabled(default=True)
+    async def info(self, ctx):
+        await ctx.send("Use /documentation to get the documentation \n use /config to configure things about the bot (example if logs are enabled)")
 
 async def setup(bot):
     await bot.add_cog(UtilityCog(bot))
