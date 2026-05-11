@@ -41,6 +41,7 @@ class MyBot(commands.Bot):
         await self.load_extension("cogs.logs")
         await self.load_extension("cogs.image_filter")
         await self.load_extension("cogs.LinkSpam")
+        await self.load_extension("cogs.MassMentionPrevention")
 
         # Sync slash commands
         guild = discord.Object(id=DEV_GUILD_ID)

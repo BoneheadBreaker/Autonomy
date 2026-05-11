@@ -42,6 +42,25 @@ class ModerationCog(commands.Cog):
         except Exception:
             await ctx.send("Failed to unmute, do I have the correct permissions?")
 
+    @commands.hybrid_command(name="lock", description="Lock a channel")
+    @commands.has_permissions(manage_channels=True)
+    async def lock(self, ctx, channel: discord.TextChannel = None):
+        channel = channel or ctx.channel
+
+        # Set permissions for @everyone role
+        await channel.set_permissions(ctx.guild.default_role, send_messages=False)
+        await ctx.send(f"{channel.mention} has been locked.")
+
+    @commands.hybrid_command(name="unlock", description="Unlocks a channe;")
+    @commands.has_permissions(manage_channels=True)
+    async def unlock(self, ctx, channel: discord.TextChannel = None):
+        channel = channel or ctx.channel
+
+        # Reset permissions or set to True
+        await channel.set_permissions(ctx.guild.default_role, send_messages=True)
+        await ctx.send(f"{channel.mention} has been unlocked.")
+
+
     @commands.hybrid_group(name="warn")
     @command_enabled(default=True)
     async def warn(self, ctx):
