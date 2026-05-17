@@ -10,16 +10,72 @@ class ModerationCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(name="ban", description="ban a user from the server")
     @command_enabled(default=True)
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason="No reason provided"):
         try:
             await member.ban(reason=reason)
-            await ctx.send(f"Banned {member.mention}")
+            await ctx.send(f"Banned **{member.mention}**")
 
         except Exception:
             await ctx.send("Failed to ban")
+
+    async def banned_users_autocomplete(self, interaction: discord.Interaction, current: str):
+        choices = []
+
+        # Fetch bans
+        async for entry in interaction.guild.bans(limit=None):
+            user = entry.user
+
+            # Match by username or ID
+            if (current.lower() in user.name.lower() or current in str(user.id)):
+                choices.append(
+                    discord.app_commands.Choice(
+                        name=f"{user} ({user.id})",
+                        value=str(user.id)
+                    )
+                )
+
+            # Discord only allows 25 choices
+            if len(choices) >= 25:
+                break
+
+        return choices
+
+    @commands.hybrid_command(name="unban", description="Unban a user by ID or autocomplete.")
+    @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
+    @discord.app_commands.autocomplete(user_id=banned_users_autocomplete)
+    async def unban(
+        self,
+        ctx: commands.Context,
+        user_id: str,
+        *,
+        reason: str = "No reason provided"
+    ):
+
+        try:
+            user = await self.bot.fetch_user(int(user_id))
+
+            await ctx.guild.unban(user, reason=reason)
+
+            await ctx.send(
+                f"Successfully unbanned **{user}**\n"
+                f"**Reason:** {reason}"
+            )
+
+        except ValueError:
+            await ctx.send("Invalid user ID.")
+
+        except discord.NotFound:
+            await ctx.send("That user is not banned.")
+
+        except discord.Forbidden:
+            await ctx.send(
+                "I do not have permission to unban members."
+            )
+
 
     @commands.hybrid_command(name="mute")
     @command_enabled(default=True)

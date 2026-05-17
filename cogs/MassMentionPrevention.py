@@ -45,7 +45,6 @@ class AntiMassMention(commands.Cog):
 
         # ignore messages without mentions
         if user_mentions == 0 and role_mentions == 0 and everyone == 0:
-            await self.bot.process_commands(message)
             return
 
         # instantly block @everyone / @here
@@ -131,8 +130,6 @@ class AntiMassMention(commands.Cog):
 
             except discord.HTTPException as e:
                 print(f"Delete failed: {e}")
-
-        await self.bot.process_commands(message)
 
 
 async def setup(bot: commands.Bot):
