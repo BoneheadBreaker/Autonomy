@@ -28,7 +28,6 @@ class LinkSpam(commands.Cog):
         self.bot = bot
         self.flag_manager = self.bot.get_cog("FlagManager")
 
-        # guild -> user -> link -> [(timestamp, channel_id)]
         self.link_cache = defaultdict(
             lambda: defaultdict(
                 lambda: defaultdict(list)

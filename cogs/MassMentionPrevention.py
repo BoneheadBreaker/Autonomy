@@ -43,6 +43,9 @@ class AntiMassMention(commands.Cog):
         role_mentions = len(message.role_mentions)
         everyone = 1 if message.mention_everyone else 0
 
+        if message.author.guild_permissions.manage_messages or message.author.guild_permissions.administrator:
+            return
+
         # ignore messages without mentions
         if user_mentions == 0 and role_mentions == 0 and everyone == 0:
             return
