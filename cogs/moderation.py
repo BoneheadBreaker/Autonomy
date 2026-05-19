@@ -14,6 +14,11 @@ class ModerationCog(commands.Cog):
     @command_enabled(default=True)
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason="No reason provided"):
+
+        if member.guild_permissions.manage_messages or member.guild_permissions.administrator:
+            await ctx.send("That user has administrator permissions, a quick quarantine command is coming soon")
+            return
+
         try:
             await member.ban(reason=reason)
             await ctx.send(f"Banned **{member.mention}**")
