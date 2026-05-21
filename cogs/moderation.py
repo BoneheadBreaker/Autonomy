@@ -12,6 +12,7 @@ class ModerationCog(commands.Cog):
         self.bot = bot
 
     @commands.hybrid_command(name="quarantine", description="Quarantine a member.")
+    @command_enabled(default=True)
     async def quarantine(self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided."):
 
         print("test")
@@ -65,6 +66,7 @@ class ModerationCog(commands.Cog):
             print(error)
 
     @commands.hybrid_command(name="dequarantine", description="Remove quarantine from a member.")
+    @command_enabled(default=True)
     async def dequarantine(self, ctx: commands.Context, member: discord.Member):
         try:
             if ctx.author != ctx.guild.owner:
@@ -86,7 +88,7 @@ class ModerationCog(commands.Cog):
             if not data:
                 return await ctx.reply("No quarantine data found for that user.")
 
-            saved_role_ids = json.loads(data[0][3])
+            saved_role_ids = json.loads(data[0][2])
 
             roles_to_restore = []
 
