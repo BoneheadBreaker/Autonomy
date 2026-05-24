@@ -17,9 +17,17 @@ class UtilityCog(commands.Cog):
     @commands.hybrid_command(name="documentation")
     @command_enabled(default=True)
     async def documentation(self, ctx):
-        await ctx.send(
-            "https://boneheadbreaker.github.io/Autonomy/"
-        )
+        await ctx.send("https://boneheadbreaker.github.io/Autonomy/")
+
+    @commands.hybrid_command(name="support")
+    @command_enabled(default=True)
+    async def support(self, ctx):
+        await ctx.send("https://discord.gg/xh9H2YqJqa")
+
+    @commands.hybrid_command(name="discord")
+    @command_enabled(default=True)
+    async def discord(self, ctx):
+        await ctx.send("https://discord.gg/xh9H2YqJqa")
 
     @commands.hybrid_command()
     @command_enabled(default=True)

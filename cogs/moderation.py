@@ -14,9 +14,6 @@ class ModerationCog(commands.Cog):
     @commands.hybrid_command(name="quarantine", description="Quarantine a member.")
     @command_enabled(default=True)
     async def quarantine(self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided."):
-
-        print("test")
-
         try:
 
             if member == ctx.author:
@@ -117,6 +114,20 @@ class ModerationCog(commands.Cog):
             print(e)
 
         await ctx.reply(f"{member.mention} has been dequarantined.")
+
+    @commands.hybrid_command(name="removenick", description="Removes a member's server nickname.")
+    @command_enabled(default=True)
+    @commands.has_permissions(manage_nicknames=True)
+    async def removenick(self, ctx: commands.Context, member: discord.Member):
+        try:
+            await member.edit(nick=None)
+            await ctx.send(f"Successfully removed the nickname for {member.mention}!")
+            
+        except discord.Forbidden:
+            await ctx.send("I lack the permissions to change this users nickname make sure \n im added with all requested permissions \n my role is higher than theirs")
+            
+        except Exception:
+            await ctx.send("An error occurred")
 
     @commands.hybrid_command(name="ban", description="ban a user from the server")
     @command_enabled(default=True)
