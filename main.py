@@ -43,6 +43,7 @@ class MyBot(commands.Bot):
         await self.load_extension("cogs.LinkSpam")
         await self.load_extension("cogs.MassMentionPrevention")
         await self.load_extension("cogs.DoubleExtensionPrevention")
+        await self.load_extension("cogs.Setup")
 
         # Sync slash commands
         guild = discord.Object(id=DEV_GUILD_ID)
