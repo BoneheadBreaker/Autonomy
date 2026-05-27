@@ -47,9 +47,13 @@ class MyBot(commands.Bot):
 
         # Sync slash commands
         guild = discord.Object(id=DEV_GUILD_ID)
-
-        self.tree.copy_global_to(guild=guild)
-        await self.tree.sync(guild=guild)
+        try:
+            self.tree.copy_global_to(guild=guild)
+            await self.tree.sync(guild=guild)
+        except discord.Forbidden:
+            print("Could not sync to developer server")
+        except Exception as error:
+            print(f"Syncing to developer server failed, error: {error}")
 
 
 bot = MyBot()
