@@ -14,7 +14,7 @@ class SetupDialogView(discord.ui.View):
         )
 
         embed = discord.Embed(
-            title="Setup",
+            title="Setup config",
             description=configure_logging_message,
             colour=0x00ff00
         )
@@ -29,6 +29,13 @@ class SetupDialogView(discord.ui.View):
                 if channel.permissions_for(interaction.guild.me).send_messages:
                     await channel.send(embed=embed)
                     break
+
+class LoggingSetupView(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        config_cog = self.bot.get_cog("ConfigCog")
+
+        
 
 class SetupDialog(commands.Cog):
     def __init__(self, bot):

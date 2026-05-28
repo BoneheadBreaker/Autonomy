@@ -22,40 +22,18 @@ class ConfigCog(commands.Cog):
                     "This command is disabled in this server."
                 )
 
-    @commands.hybrid_group(name="config")
-    async def config(self, ctx):
-
-        if ctx.invoked_subcommand is None:
-            await ctx.send("Invalid use")
-
-    @config.command(name="enable")
-    @commands.has_permissions(administrator=True)
-    async def config_enable(
-        self,
-        ctx,
-        command_name: str
-    ):
-
+    async def _config_enable(self, ctx, command_name: str):
         valid = get_toggleable_commands(ctx.bot)
 
         if command_name not in valid:
-            await ctx.send(
-                f"Invalid command.\n"
-                f"Available: {', '.join(valid)}"
-            )
-            return
+            return "invalid_command_name"
 
         command_obj = ctx.bot.get_command(command_name)
 
         default = True
 
-        if (
-            command_obj and
-            hasattr(
-                command_obj.callback,
-                "__command_default__"
-            )
-        ):
+        if (command_obj and hasattr(command_obj.callback, "__command_default__")):
+
             default = command_obj.callback.__command_default__
 
         db.delete(
@@ -74,24 +52,12 @@ class ConfigCog(commands.Cog):
                 True
             )
 
-        await ctx.send(f"Enabled `{command_name}`")
-
-    @config.command(name="disable")
-    @commands.has_permissions(administrator=True)
-    async def config_disable(
-        self,
-        ctx,
-        command_name: str
-    ):
+    async def _config_disable(self, ctx, command_name: str):
 
         valid = get_toggleable_commands(ctx.bot)
 
         if command_name not in valid:
-            await ctx.send(
-                f"Invalid command.\n"
-                f"Available: {', '.join(valid)}"
-            )
-            return
+            return "invalid_command_name"
 
         command_obj = ctx.bot.get_command(command_name)
 
@@ -99,10 +65,7 @@ class ConfigCog(commands.Cog):
 
         if (
             command_obj and
-            hasattr(
-                command_obj.callback,
-                "__command_default__"
-            )
+            hasattr(command_obj.callback, "__command_default__")
         ):
             default = command_obj.callback.__command_default__
 
@@ -122,7 +85,43 @@ class ConfigCog(commands.Cog):
                 False
             )
 
-        await ctx.send(f"Disabled `{command_name}`")
+    @commands.hybrid_group(name="config")
+    async def config(self, ctx):
+
+        if ctx.invoked_subcommand is None:
+            await ctx.send("You must use a subcommand")
+
+    @config.command(name="enable")
+    @commands.has_permissions(administrator=True)
+    async def config_enable(self, ctx, command_name: str):
+
+        error = await self._config_enable(ctx, command_name)
+
+        if error == "invalid_command_name":
+            valid_commands = get_toggleable_commands(ctx.bot)
+
+            await ctx.send(
+                f"Invalid command. Need help? use /discord to get an invite link for help!\n"
+                f"Available commands: {', '.join(valid_commands)}"
+            )
+        else:
+            await ctx.send(f"Enabled `{command_name}`")
+
+    @config.command(name="disable")
+    @commands.has_permissions(administrator=True)
+    async def config_disable(self, ctx, command_name: str):
+
+        error = await self._config_disable(ctx, command_name)
+
+        if error == "invalid_command_name":
+            valid_commands = get_toggleable_commands(ctx.bot)
+
+            await ctx.send(
+                f"Invalid command. Need help? use /discord to get an invite link for help!\n"
+                f"Available commands: {', '.join(valid_commands)}"
+            )
+        else:
+            await ctx.send(f"Disabled `{command_name}`")
 
     @config.command(name="list")
     @commands.has_permissions(administrator=True)
@@ -190,7 +189,7 @@ class ConfigCog(commands.Cog):
         )
 
         await ctx.send(
-            "All command overrides reset."
+            "Config as reset back to default"
         )
 
     @config_enable.autocomplete("command_name")
