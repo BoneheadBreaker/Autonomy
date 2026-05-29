@@ -42,9 +42,15 @@ class ConfigCog(commands.Cog):
 
         return bool(rows[0][2])
 
-    async def _config_enable(self, ctx, module_name: str):
+    async def _config_enable(
+        self,
+        ctx,
+        module_name: str
+    ):
 
-        valid = get_toggleable_commands(ctx.bot)
+        valid = get_toggleable_commands(
+            ctx.bot
+        )
 
         if module_name not in valid:
             return "invalid_module_name"
@@ -64,9 +70,15 @@ class ConfigCog(commands.Cog):
             True
         )
 
-    async def _config_disable(self, ctx, module_name: str):
+    async def _config_disable(
+        self,
+        ctx,
+        module_name: str
+    ):
 
-        valid = get_toggleable_commands(ctx.bot)
+        valid = get_toggleable_commands(
+            ctx.bot
+        )
 
         if module_name not in valid:
             return "invalid_module_name"
@@ -90,53 +102,134 @@ class ConfigCog(commands.Cog):
     async def config(self, ctx):
 
         if ctx.invoked_subcommand is None:
-            await ctx.send("You must use a subcommand")
+
+            await ctx.send(
+                "You must use a subcommand"
+            )
 
     @config.command(name="enable")
-    @commands.has_permissions(administrator=True)
-    async def config_enable(self, ctx, module_name: str):
+    @commands.has_permissions(
+        administrator=True
+    )
+    async def config_enable(
+        self,
+        ctx,
+        module_name: str
+    ):
 
-        error = await self._config_enable(ctx, module_name)
+        error = await self._config_enable(
+            ctx,
+            module_name
+        )
 
         if error == "invalid_module_name":
 
-            valid_commands = get_toggleable_commands(ctx.bot)
-
-            await ctx.send(
-                f"Invalid module.\n"
-                f"Available modules: {', '.join(valid_commands)}"
+            valid_commands = (
+                get_toggleable_commands(
+                    ctx.bot
+                )
             )
 
-        else:
-            await ctx.send(f"Enabled `{module_name}`")
+            return await ctx.send(
+                f"Invalid module.\n"
+                f"Available modules: "
+                f"{', '.join(valid_commands)}"
+            )
+
+        await ctx.send(
+            f"Enabled `{module_name}`"
+        )
 
     @config.command(name="disable")
-    @commands.has_permissions(administrator=True)
-    async def config_disable(self, ctx, module_name: str):
+    @commands.has_permissions(
+        administrator=True
+    )
+    async def config_disable(
+        self,
+        ctx,
+        module_name: str
+    ):
 
-        error = await self._config_disable(ctx, module_name)
+        error = await self._config_disable(
+            ctx,
+            module_name
+        )
 
         if error == "invalid_module_name":
 
-            valid_commands = get_toggleable_commands(ctx.bot)
-
-            await ctx.send(
-                f"Invalid module.\n"
-                f"Available modules: {', '.join(valid_commands)}"
+            valid_commands = (
+                get_toggleable_commands(
+                    ctx.bot
+                )
             )
 
-        else:
-            await ctx.send(f"Disabled `{module_name}`")
+            return await ctx.send(
+                f"Invalid module.\n"
+                f"Available modules: "
+                f"{', '.join(valid_commands)}"
+            )
+
+        await ctx.send(
+            f"Disabled `{module_name}`"
+        )
+
+    @config.command(name="set")
+    @commands.has_permissions(
+        administrator=True
+    )
+    async def config_set(
+        self,
+        ctx,
+        module_name: str,
+        channel: discord.TextChannel
+    ):
+
+        # currently only logs
+        # supports extra config
+
+        if module_name != "logs":
+
+            return await ctx.send(
+                "Only the `logs` module "
+                "currently supports "
+                "extra configuration."
+            )
+
+        db.delete(
+            "logging_channel",
+            {
+                "guild_id": ctx.guild.id
+            }
+        )
+
+        db.add(
+            "logging_channel",
+            ctx.guild.id,
+            str(channel.id)
+        )
+
+        await ctx.send(
+            f"Logging channel set to "
+            f"{channel.mention}"
+        )
 
     @config.command(name="list")
-    @commands.has_permissions(administrator=True)
+    @commands.has_permissions(
+        administrator=True
+    )
     async def config_list(self, ctx):
 
-        modules = get_toggleable_commands(ctx.bot)
+        modules = (
+            get_toggleable_commands(
+                ctx.bot
+            )
+        )
 
         rows = db.get(
             "modules_is_enabled",
-            {"guild_id": ctx.guild.id}
+            {
+                "guild_id": ctx.guild.id
+            }
         ) or []
 
         overrides = {
@@ -149,15 +242,57 @@ class ConfigCog(commands.Cog):
         for module in modules:
 
             if module in overrides:
+
                 state = (
                     "Enabled"
                     if overrides[module]
                     else "Disabled"
                 )
-            else:
-                state = "Enabled (default)"
 
-            lines.append(f"{module}: {state}")
+            else:
+
+                state = (
+                    "Enabled (default)"
+                )
+
+            extra = ""
+
+            # show logging channel
+            # only on parent logs module
+
+            if module == "logs":
+
+                channel_rows = db.get(
+                    "logging_channel",
+                    {
+                        "guild_id": ctx.guild.id
+                    }
+                )
+
+                if channel_rows:
+
+                    channel_id = (
+                        channel_rows[0][1]
+                    )
+
+                    channel = (
+                        ctx.guild.get_channel(
+                            int(channel_id)
+                        )
+                    )
+
+                    if channel:
+
+                        extra = (
+                            f" | Channel: "
+                            f"{channel.mention}"
+                        )
+
+            lines.append(
+                f"{module}: "
+                f"{state}"
+                f"{extra}"
+            )
 
         message = (
             "\n".join(lines)
@@ -165,31 +300,53 @@ class ConfigCog(commands.Cog):
             else "No modules found"
         )
 
-        await ctx.send(f"```\n{message}\n```")
+        await ctx.send(
+            f"```\n{message}\n```"
+        )
 
     @config.command(name="reset")
-    @commands.has_permissions(administrator=True)
+    @commands.has_permissions(
+        administrator=True
+    )
     async def config_reset(self, ctx):
 
         db.delete(
             "modules_is_enabled",
-            {"guild_id": ctx.guild.id}
+            {
+                "guild_id": ctx.guild.id
+            }
+        )
+
+        db.delete(
+            "logging_channel",
+            {
+                "guild_id": ctx.guild.id
+            }
         )
 
         await ctx.send(
             "Config reset back to default"
         )
 
-    @config_enable.autocomplete("module_name")
-    @config_disable.autocomplete("module_name")
+    @config_enable.autocomplete(
+        "module_name"
+    )
+    @config_disable.autocomplete(
+        "module_name"
+    )
+    @config_set.autocomplete(
+        "module_name"
+    )
     async def command_autocomplete(
         self,
         interaction: discord.Interaction,
         current: str
     ):
 
-        cmds = get_toggleable_commands(
-            interaction.client
+        cmds = (
+            get_toggleable_commands(
+                interaction.client
+            )
         )
 
         return [
@@ -198,9 +355,13 @@ class ConfigCog(commands.Cog):
                 value=cmd
             )
             for cmd in cmds
-            if current.lower() in cmd.lower()
+            if current.lower()
+            in cmd.lower()
         ][:25]
 
 
 async def setup(bot):
-    await bot.add_cog(ConfigCog(bot))
+
+    await bot.add_cog(
+        ConfigCog(bot)
+    )
