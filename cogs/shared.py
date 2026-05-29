@@ -13,10 +13,10 @@ db.create_table("quarantined_users", "guild_id INTEGER", "user_id INTEGER", "rol
 
 CUSTOM_MODULES = [
     "logs.deleted_messages",
-    "logs_edited_messages",
-    "logs_member_join",
-    "logs_member_remove",
-    "logs_invites"
+    "logs.edited_messages",
+    "logs.member_join",
+    "logs.member_remove",
+    "logs.invites"
 ]
 
 

@@ -143,7 +143,7 @@ class LogsManager(commands.Cog):
 
         if not await self.is_enabled(
             old_message.guild.id,
-            "logs_edited_messages"
+            "logs.edited_messages"
         ):
             return
 
@@ -180,7 +180,7 @@ class LogsManager(commands.Cog):
 
         if not await self.is_enabled(
             member.guild.id,
-            "logs_member_join"
+            "logs.member_join"
         ):
             return
 
@@ -204,7 +204,7 @@ class LogsManager(commands.Cog):
 
         if not await self.is_enabled(
             member.guild.id,
-            "logs_member_remove"
+            "logs.member_remove"
         ):
             return
 
@@ -229,7 +229,7 @@ class LogsManager(commands.Cog):
 
         if not await self.is_enabled(
             message.guild.id,
-            "logs_invites"
+            "logs.invites"
         ):
             return
 
