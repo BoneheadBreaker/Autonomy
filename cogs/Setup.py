@@ -62,16 +62,8 @@ class SetupDialogView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(
-        label="Configure Logging",
-        style=discord.ButtonStyle.primary,
-        custom_id="configure_logging"
-    )
-    async def configure_logging(
-        self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button
-    ):
+    @discord.ui.button(label="Configure Logging", style=discord.ButtonStyle.primary, custom_id="configure_logging")
+    async def configure_logging(self, interaction: discord.Interaction, button: discord.ui.Button):
         embed = discord.Embed(
             title="Logging Setup",
             description=(

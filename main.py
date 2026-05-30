@@ -1,26 +1,34 @@
 import discord
 from discord.ext import commands
 import os
-
-from dotenv import load_dotenv
-
+from cogs.shared import log
 from ConfigLoader import load_config
 
-load_dotenv()
+# Load optional .env (still works for local dev)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+
+DB_PATH = os.getenv("DB_PATH", "bot.db")
+LOG_PATH = os.getenv("LOG_PATH", "./logs")
+
+# Optional safety check
+if not DISCORD_TOKEN:
+    raise RuntimeError("DISCORD_TOKEN is not set in environment variables")
 
 CONFIG = load_config()
 
 DEV_GUILD_ID = 1254318703554723901
 
-# Intents
 intents = discord.Intents.default()
 intents.message_content = True
 intents.presences = True
 intents.members = True
 intents.messages = True
-
 
 class MyBot(commands.Bot):
     def __init__(self):
@@ -28,6 +36,11 @@ class MyBot(commands.Bot):
             command_prefix=CONFIG["general"]["prefix"],
             intents=intents
         )
+
+        # attach shared runtime config (useful in cogs)
+        self.config = CONFIG
+        self.db_path = DB_PATH
+        self.log_path = LOG_PATH
 
     async def setup_hook(self):
 
@@ -45,23 +58,23 @@ class MyBot(commands.Bot):
         await self.load_extension("cogs.DoubleExtensionPrevention")
         await self.load_extension("cogs.Setup")
 
-        # Sync slash commands
+        # Sync slash commands to dev guild only
         guild = discord.Object(id=DEV_GUILD_ID)
+
         try:
             self.tree.copy_global_to(guild=guild)
             await self.tree.sync(guild=guild)
+
         except discord.Forbidden:
             print("Could not sync to developer server")
+
         except Exception as error:
             print(f"Syncing to developer server failed, error: {error}")
-
 
 bot = MyBot()
 
 @bot.event
 async def on_ready():
-    bot.config = CONFIG
-
     status_type = CONFIG["general"]["status_type"].lower()
     status_text = CONFIG["general"]["status_text"]
 
@@ -91,6 +104,5 @@ async def on_ready():
     )
 
     print(f"Logged in as {bot.user}")
-
 
 bot.run(DISCORD_TOKEN)
