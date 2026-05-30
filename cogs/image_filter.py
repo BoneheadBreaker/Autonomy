@@ -131,7 +131,18 @@ class ImageFilterCog(commands.Cog):
                         )
 
                 except discord.Forbidden:
-                    print("[ImageFilter] Missing permissions to delete message")
+                    await logs_cog.add_log(
+                        guild_id = message.guild.id,
+                        event_name = "Log - Known scam image",
+                        event_description=(
+                            f"Author: {message.author} ({message.author.id})\n",
+                            f"Channel: {message.channel.mention}\n",
+                            f"Distance: {distance}\n",
+                            f"Message Content: {message.content or 'message contained no text'}",
+                            "WARNING",
+                            "Autonomy LACKED THE PERMISSION TO DELETE THE MESSAGE"
+                        )
+                    )
 
                 except Exception as e:
                     print(f"[ImageFilter] Delete failed: {e}")
