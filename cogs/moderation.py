@@ -14,6 +14,7 @@ class ModerationCog(commands.Cog):
 
     @commands.hybrid_command(name="quarantine", description="Quarantine a member.")
     @command_enabled(default=True)
+    @commands.has_permissions(administrator=True)
     async def quarantine(self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided."):
         try:
 
@@ -72,6 +73,7 @@ class ModerationCog(commands.Cog):
 
     @commands.hybrid_command(name="dequarantine", description="Remove quarantine from a member.")
     @command_enabled(default=True)
+    @commands.has_permissions(administrator=True)
     async def dequarantine(self, ctx: commands.Context, member: discord.Member):
         try:
             if ctx.author != ctx.guild.owner:
@@ -201,6 +203,7 @@ class ModerationCog(commands.Cog):
     @commands.hybrid_command(name="mute")
     @command_enabled(default=True)
     @commands.has_permissions(moderate_members=True)
+    @commands.guild_only()
     async def mute(self, ctx, member: discord.Member, minutes: int, *, reason="No reason provided"):
 
         try:
@@ -217,6 +220,7 @@ class ModerationCog(commands.Cog):
     @commands.hybrid_command(name="unmute")
     @command_enabled(default=True)
     @commands.has_permissions(moderate_members=True)
+    @commands.guild_only()
     async def unmute(self, ctx, member: discord.Member, *, reason="No reason provided"):
 
         try:
@@ -230,6 +234,7 @@ class ModerationCog(commands.Cog):
 
     @commands.hybrid_command(name="lock", description="Lock a channel")
     @commands.has_permissions(manage_channels=True)
+    @commands.guild_only()
     async def lock(self, ctx, channel: discord.TextChannel = None):
 
         channel = channel or ctx.channel
@@ -240,6 +245,7 @@ class ModerationCog(commands.Cog):
 
     @commands.hybrid_command(name="unlock", description="Unlocks a channel")
     @commands.has_permissions(manage_channels=True)
+    @commands.guild_only()
     async def unlock(self, ctx, channel: discord.TextChannel = None):
 
         channel = channel or ctx.channel
@@ -250,6 +256,7 @@ class ModerationCog(commands.Cog):
 
     @commands.hybrid_group(name="warn")
     @command_enabled(default=True)
+    @commands.guild_only()
     async def warn(self, ctx):
 
         if ctx.invoked_subcommand is None:

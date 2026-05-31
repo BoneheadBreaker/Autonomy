@@ -1,7 +1,7 @@
 import re
 import time
 from collections import defaultdict
-
+from .shared import log
 import discord
 from discord.ext import commands
 
@@ -27,15 +27,15 @@ class LinkSpam(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.flag_manager = self.bot.get_cog("FlagManager")
+        self.log_manager = self.bot.get_cog("LogsManager")
 
         self.link_cache = defaultdict(
             lambda: defaultdict(
                 lambda: defaultdict(list)
-            )
-        )
+            ))
 
-        self.time_window = 30      # seconds
-        self.channel_threshold = 2  # different channels required
+        self.time_window = 10      # seconds
+        self.channel_threshold = 3  # different channels required
 
     def normalize_link(self, url: str) -> str:
         url = url.lower().strip()
@@ -71,30 +71,45 @@ class LinkSpam(commands.Cog):
 
             # Remove expired entries
             entries[:] = [
-                (ts, ch)
-                for ts, ch in entries
+                (ts, ch, msg)
+                for ts, ch, msg in entries
                 if current_time - ts <= self.time_window
             ]
 
-            # Add new occurrence
-            entries.append((current_time, channel_id))
+            # Store the message itself
+            entries.append((current_time, channel_id, message))
 
-            # Count unique channels
-            unique_channels = {ch for _, ch in entries}
+            unique_channels = {ch for _, ch, _ in entries}
 
             if len(unique_channels) >= self.channel_threshold:
 
-                print(
-                    f"[LINK SPAM] "
-                    f"{message.author} in {message.guild.name}"
-                )
-
                 self.flag_manager.add_score(message.author.id, 20)
+                start_time = min(ts for ts, _, _ in entries)
+                end_time = max(ts for ts, _, _ in entries)
 
-                score = self.flag_manager.get_score(message.author.id)
-                print(score)
+                duration = end_time - start_time
+                log("Test")
 
-                # Clear cache so it doesn't repeatedly trigger
+                if self.log_manager:
+                    description = (
+                        f"{len(entries)} messages were sent in {len(unique_channels)} unique channels in {duration} seconds \n"
+                        f"Autonomy has automatically deleted them"
+                    )
+
+                    await self.log_manager.add_log(guild_id=message.guild.id, event_name="Log - Link spammed", event_description=description, event_colour=0xff0000)
+                else:
+                    log("Log manager cannot be found")
+                # Delete every tracked message for this link
+                for _, _, msg in entries:
+                    try:
+                        await msg.delete()
+                    except discord.NotFound:
+                        pass
+                    except discord.Forbidden:
+                        pass
+                    except discord.HTTPException:
+                        pass
+
                 self.link_cache[guild_id][user_id][link].clear()
 
                 break

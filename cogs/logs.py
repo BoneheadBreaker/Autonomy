@@ -53,26 +53,23 @@ class LogsManager(commands.Cog):
 
         return self.bot.get_channel(channel_id)
 
-    async def add_log(
-        self,
-        guild_id,
-        event_name,
-        event_description,
-        event_colour
-    ):
+    async def add_log(self, guild_id, event_name, event_description, event_colour):
+        try:
+            log_channel = self.get_log_channel(guild_id)
 
-        log_channel = self.get_log_channel(guild_id)
+            if log_channel is None:
+                print("IT NONE")
+                return
 
-        if log_channel is None:
-            return
+            embed = discord.Embed(
+                title=event_name,
+                description=event_description,
+                colour=event_colour
+            )
 
-        embed = discord.Embed(
-            title=event_name,
-            description=event_description,
-            colour=event_colour
-        )
-
-        await log_channel.send(embed=embed)
+            await log_channel.send(embed=embed)
+        except Exception as error:
+            print(error)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
