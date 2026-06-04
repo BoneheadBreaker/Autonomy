@@ -1,4 +1,4 @@
-# Credit hasancagrigungor this script is taken from one of their repos (i've slightly edited it)
+# Credit hasancagrigungor this script is taken from one of their repos (i've edited it)
 
 import sqlite3
 import pandas as pd

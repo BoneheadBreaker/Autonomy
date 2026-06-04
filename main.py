@@ -57,19 +57,19 @@ class MyBot(commands.Bot):
         await self.load_extension("cogs.MassMentionPrevention")
         await self.load_extension("cogs.DoubleExtensionPrevention")
         await self.load_extension("cogs.Setup")
+        await self.load_extension("cogs.links_filter")
 
-        # Sync slash commands to dev guild only
-        guild = discord.Object(id=DEV_GUILD_ID)
+        dev_guild = discord.Object(id=DEV_GUILD_ID)
 
         try:
-            self.tree.copy_global_to(guild=guild)
-            await self.tree.sync(guild=guild)
+            # Sync / commands to dev guild
+            await self.tree.sync(guild=dev_guild)
 
-        except discord.Forbidden:
-            print("Could not sync to developer server")
+            # Sync / commands globally
+            await self.tree.sync()
 
-        except Exception as error:
-            print(f"Syncing to developer server failed, error: {error}")
+        except Exception as e:
+            print(f"Sync failed: {e}")
 
 bot = MyBot()
 

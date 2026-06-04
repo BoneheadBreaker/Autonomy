@@ -14,6 +14,13 @@ class LoggingChannelSelect(discord.ui.ChannelSelect):
         )
 
     async def callback(self, interaction: discord.Interaction):
+        # Administrator permission check
+        if not interaction.user.guild_permissions.administrator:
+            return await interaction.response.send_message(
+                "You must have **Administrator** permissions to interact with the setup menu",
+                ephemeral=True
+            )
+
         channel = self.values[0]
 
         existing = db.get(
@@ -62,8 +69,23 @@ class SetupDialogView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(label="Configure Logging", style=discord.ButtonStyle.primary, custom_id="configure_logging")
-    async def configure_logging(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(
+        label="Configure Logging",
+        style=discord.ButtonStyle.primary,
+        custom_id="configure_logging"
+    )
+    async def configure_logging(
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button
+    ):
+        # Administrator permission check
+        if not interaction.user.guild_permissions.administrator:
+            return await interaction.response.send_message(
+                "❌ You must have **Administrator** permissions to configure logging.",
+                ephemeral=True
+            )
+
         embed = discord.Embed(
             title="Logging Setup",
             description=(

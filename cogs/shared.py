@@ -16,6 +16,8 @@ db.create_table("DB_ACCESS_TOKENS", "TOKENS TEXT")
 
 db.create_table("logging_channel", "guild_id INTEGER", "channel TEXT")
 
+db.create_table("blocked_links", "guild_id INTEGER", "link TEXT")
+
 db.create_table(
     "modules_is_enabled",
     "guild_id INTEGER",
@@ -107,10 +109,6 @@ LOG_PATH = os.getenv("LOG_PATH", "./logs")
 
 
 def log(message: str, level: str = "INFO"):
-    """
-    Simple file logger.
-    Writes timestamped logs to LOG_PATH.
-    """
 
     try:
         log_file = Path(LOG_PATH)
