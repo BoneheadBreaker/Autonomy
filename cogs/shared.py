@@ -18,6 +18,8 @@ db.create_table("logging_channel", "guild_id INTEGER", "channel TEXT")
 
 db.create_table("blocked_links", "guild_id INTEGER", "link TEXT")
 
+db.create_table("blocked_words", "guild_id INTEGER", "word TEXT")
+
 db.create_table(
     "modules_is_enabled",
     "guild_id INTEGER",

@@ -4,7 +4,7 @@ from discord.ext import commands
 from .shared import db
 
 
-class LinkFilter(commands.Cog):
+class WordsFilter(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -21,7 +21,7 @@ class LinkFilter(commands.Cog):
             return
         
         rows = db.get(
-            "blocked_links",
+            "blocked_words",
             {
                 "guild_id": message.guild.id
             }
@@ -43,7 +43,7 @@ class LinkFilter(commands.Cog):
 
                     try:
                         await message.author.send(
-                            f"Your message was removed because it contained a blocked link\n"
+                            f"Your message was removed because it contained a blocked word\n"
                         )
                     except Exception:
                         pass
@@ -55,4 +55,4 @@ class LinkFilter(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(LinkFilter(bot))
+    await bot.add_cog(WordsFilter(bot))

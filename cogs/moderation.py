@@ -254,10 +254,7 @@ class ModerationCog(commands.Cog):
 
         await ctx.send(f"{channel.mention} has been unlocked.")
 
-    @commands.hybrid_group(
-        name="links",
-        description="Manage automatically removed links"
-    )
+    @commands.hybrid_group(name="links", description="Manage automatically removed links")
     @command_enabled(default=True)
     @commands.has_permissions(administrator=True)
     async def links(self, ctx):
@@ -270,10 +267,7 @@ class ModerationCog(commands.Cog):
                 "`/links list`"
             )
 
-    @links.command(
-        name="add",
-        description="Add a link to automatically remove"
-    )
+    @links.command(name="add", description="Add a link to automatically remove")
     @command_enabled(default=True)
     @commands.has_permissions(administrator=True)
     async def links_add(self, ctx, link: str):
@@ -292,7 +286,7 @@ class ModerationCog(commands.Cog):
             return await ctx.send(
                 "That link is already being blocked."
             )
-
+            
         db.add(
             "blocked_links",
             guild_id,
@@ -303,11 +297,7 @@ class ModerationCog(commands.Cog):
             f"Added `{link}` to the blocked links list."
         )
 
-    @links.command(
-        name="remove",
-        description="Remove a blocked link"
-    )
-
+    @links.command(name="remove", description="Remove a blocked link")
     @command_enabled(default=True)
     @commands.has_permissions(administrator=True)
     async def links_remove(self, ctx, link: str):
@@ -342,7 +332,7 @@ class ModerationCog(commands.Cog):
     @links.command(name="list", description="Show all blocked links")
     @command_enabled(default=True)
     @commands.has_permissions(administrator=True)
-    async def links_list(self, ctx):
+    async def words_list(self, ctx):
 
         rows = db.get(
             "blocked_links",
@@ -362,7 +352,112 @@ class ModerationCog(commands.Cog):
         )
 
         await ctx.send(
-            f"**Blocked Links**\n{links}"
+            f"**Blocked links**\n{links}"
+        )
+
+    @commands.hybrid_group(name="words", description="Manage automatically removed links")
+    @command_enabled(default=True)
+    @commands.has_permissions(administrator=True)
+    async def words(self, ctx):
+
+        if ctx.invoked_subcommand is None:
+            await ctx.send(
+                "Please pass a subcommand.\n"
+                "`/words add <word>`\n"
+                "`/words remove <word>`\n"
+                "`/words list`"
+            )
+
+    @words.command(name="add", description="Add a word to automatically remove")
+    @command_enabled(default=True)
+    @commands.has_permissions(administrator=True)
+    async def words_add(self, ctx, word: str):
+        try:
+            print("GOT EM")
+            guild_id = ctx.guild.id
+
+            existing = db.get(
+                "blocked_words",
+                {
+                    "guild_id": guild_id,
+                    "word": word
+                }
+            )
+            print("GOT EM x2")
+            if existing:
+                return await ctx.send(
+                    "That word is already being blocked."
+                )
+            print("GOT EM x3")
+            db.add(
+                "blocked_words",
+                guild_id,
+                word
+            )
+            print("GOT EM x4")
+            await ctx.send(
+                f"Added `{word}` to the blocked links list."
+            )
+            print("GOT EM x5")
+        except Exception as error:
+            print(error)
+
+    @words.command(name="remove", description="Remove a blocked word")
+    @command_enabled(default=True)
+    @commands.has_permissions(administrator=True)
+    async def words_remove(self, ctx, word: str):
+
+        guild_id = ctx.guild.id
+
+        existing = db.get(
+            "blocked_words",
+            {
+                "guild_id": guild_id,
+                "word": word
+            }
+        )
+
+        if not existing:
+            return await ctx.send(
+                "That link is not in the blocked links list."
+            )
+
+        db.delete(
+            "blocked_words",
+            {
+                "guild_id": guild_id,
+                "word": word
+            }
+        )
+
+        await ctx.send(
+            f"Removed `{word}` from the blocked words list."
+        )
+
+    @words.command(name="list", description="Show all blocked words")
+    @command_enabled(default=True)
+    @commands.has_permissions(administrator=True)
+    async def words_list(self, ctx):
+
+        rows = db.get(
+            "blocked_words",
+            {
+                "guild_id": ctx.guild.id
+            }
+        )
+
+        if not rows:
+            return await ctx.send(
+                "No blocked words configured."
+            )
+
+        words = "\n".join(
+            f"• {row[1]}"
+            for row in rows
+        )
+
+        await ctx.send(
+            f"**Blocked words**\n{words}"
         )
 
     @commands.hybrid_group(name="warn")
