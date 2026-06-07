@@ -244,6 +244,7 @@ class ModerationCog(commands.Cog):
         await ctx.send(f"{channel.mention} has been locked.")
 
     @commands.hybrid_command(name="unlock", description="Unlocks a channel")
+    @command_enabled(default=True)
     @commands.has_permissions(manage_channels=True)
     @commands.guild_only()
     async def unlock(self, ctx, channel: discord.TextChannel = None):
@@ -286,7 +287,7 @@ class ModerationCog(commands.Cog):
             return await ctx.send(
                 "That link is already being blocked."
             )
-            
+
         db.add(
             "blocked_links",
             guild_id,

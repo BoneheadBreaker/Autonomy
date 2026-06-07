@@ -26,9 +26,6 @@ class WordsFilter(commands.Cog):
                 "guild_id": message.guild.id
             }
         )
-        print(rows)
-        print(message.guild.id)
-        print(message.content)
         if not rows:
             return
 

@@ -59,6 +59,7 @@ class MyBot(commands.Bot):
         await self.load_extension("cogs.Setup")
         await self.load_extension("cogs.links_filter")
         await self.load_extension("cogs.words_filter")
+        await self.load_extension("cogs.giveaway")
 
         dev_guild = discord.Object(id=DEV_GUILD_ID)
 
