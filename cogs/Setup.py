@@ -3,7 +3,6 @@ from discord.ext import commands
 
 from .shared import db
 
-
 class LoggingChannelSelect(discord.ui.ChannelSelect):
     def __init__(self):
         super().__init__(
@@ -82,15 +81,14 @@ class SetupDialogView(discord.ui.View):
         # Administrator permission check
         if not interaction.user.guild_permissions.administrator:
             return await interaction.response.send_message(
-                "❌ You must have **Administrator** permissions to configure logging.",
+                "You must have **Administrator** permissions to configure logging.",
                 ephemeral=True
             )
 
         embed = discord.Embed(
             title="Logging Setup",
             description=(
-                "Select the channel you want me to use "
-                "for logging events."
+                "Select the channel you want me to use for logging events."
             ),
             colour=discord.Colour.blurple()
         )

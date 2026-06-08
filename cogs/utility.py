@@ -22,12 +22,12 @@ class UtilityCog(commands.Cog):
     @commands.hybrid_command(name="support")
     @command_enabled(default=True)
     async def support(self, ctx):
-        await ctx.send("https://discord.gg/xh9H2YqJqa")
+        await ctx.send("https://discord.gg/YMn5hfefbU")
 
     @commands.hybrid_command(name="discord")
     @command_enabled(default=True)
     async def discord(self, ctx):
-        await ctx.send("https://discord.gg/xh9H2YqJqa")
+        await ctx.send("https://discord.gg/YMn5hfefbU")
 
     @commands.hybrid_command()
     @command_enabled(default=True)

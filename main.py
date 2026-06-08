@@ -4,6 +4,10 @@ import os
 from cogs.shared import log
 from ConfigLoader import load_config
 
+print(discord.__version__)
+print(hasattr(discord.ui, "channel_select"))
+print([x for x in dir(discord.ui) if "select" in x.lower()])
+
 # Load optional .env (still works for local dev)
 try:
     from dotenv import load_dotenv
@@ -60,6 +64,7 @@ class MyBot(commands.Bot):
         await self.load_extension("cogs.links_filter")
         await self.load_extension("cogs.words_filter")
         await self.load_extension("cogs.giveaway")
+        await self.load_extension("cogs.tickets")
 
         dev_guild = discord.Object(id=DEV_GUILD_ID)
 
