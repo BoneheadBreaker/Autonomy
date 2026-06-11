@@ -20,21 +20,23 @@ db.create_table("blocked_links", "guild_id INTEGER", "link TEXT")
 
 db.create_table("blocked_words", "guild_id INTEGER", "word TEXT")
 
-db.create_table("tickets", "guild_id INTEGER", "tickets_transcript INTEGER", "tickets_category INTEGER")
+db.create_table("tickets", "guild_id INTEGER", "tickets_transcript INTEGER", "tickets_category INTEGER", "ticket_limit INTEGER")
 
-db.create_table(
-    "modules_is_enabled",
-    "guild_id INTEGER",
-    "module TEXT",
-    "is_enabled BOOLEAN"
-)
+db.create_table("ticket_panels", "guild_id INTEGER", "channel_id INTEGER", "message_id INTEGER", "panel_message TEXT")
 
-db.create_table(
-    "quarantined_users",
-    "guild_id INTEGER",
-    "user_id INTEGER",
-    "roles TEXT"
-)
+db.create_table("ticket_access", "guild_id INTEGER", "target_id INTEGER", "target_type TEXT")
+
+db.create_table("active_tickets", "guild_id INTEGER", "channel_id INTEGER", "owner_id INTEGER")
+
+db.create_table("modules_is_enabled", "guild_id INTEGER", "module TEXT", "is_enabled BOOLEAN")
+
+db.create_table("quarantined_users", "guild_id INTEGER", "user_id INTEGER", "roles TEXT")
+
+db.create_table("ticket_access", "guild_id INTEGER", "target_id INTEGER", "target_type TEXT")
+
+db.create_table("active_tickets", "guild_id INTEGER", "channel_id INTEGER", "owner_id INTEGER")
+
+db.create_table("ticket_panels", "guild_id INTEGER", "channel_id INTEGER", "message_id INTEGER", "panel_message TEXT")
 
 CUSTOM_MODULES = [
     "logs",

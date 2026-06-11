@@ -3,6 +3,8 @@ from discord.ext import commands
 import os
 from cogs.shared import log
 from ConfigLoader import load_config
+from cogs.tickets import TicketPanelView
+from cogs.tickets import TicketCloseView
 
 print(discord.__version__)
 print(hasattr(discord.ui, "channel_select"))
@@ -65,6 +67,9 @@ class MyBot(commands.Bot):
         await self.load_extension("cogs.words_filter")
         await self.load_extension("cogs.giveaway")
         await self.load_extension("cogs.tickets")
+
+        self.add_view(TicketPanelView())
+        self.add_view(TicketPanelView())
 
         dev_guild = discord.Object(id=DEV_GUILD_ID)
 
