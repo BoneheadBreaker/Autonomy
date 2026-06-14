@@ -58,7 +58,6 @@ class LogsManager(commands.Cog):
             log_channel = self.get_log_channel(guild_id)
 
             if log_channel is None:
-                print("IT NONE")
                 return
 
             embed = discord.Embed(
