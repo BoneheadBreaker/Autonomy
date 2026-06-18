@@ -140,7 +140,7 @@ class ImageFilterCog(commands.Cog):
                             f"Distance: {distance}\n"
                             f"Message Content: {message.content or 'message contained no text'}"
                             "WARNING"
-                            "Autonomy LACKED THE PERMISSION TO DELETE THE MESSAGE"
+                            "Autonomy LACKED THE PERMISSIONS TO DELETE THE MESSAGE"
                         )
                     )
 

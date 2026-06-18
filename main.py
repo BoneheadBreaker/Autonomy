@@ -67,6 +67,7 @@ class MyBot(commands.Bot):
         await self.load_extension("cogs.words_filter")
         await self.load_extension("cogs.giveaway")
         await self.load_extension("cogs.tickets")
+        await self.load_extension("cogs.events")
 
         self.add_view(TicketPanelView())
         self.add_view(TicketPanelView())
