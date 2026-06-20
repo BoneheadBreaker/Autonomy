@@ -297,11 +297,5 @@ class EventCog(commands.Cog):
 
         await ctx.interaction.response.send_modal(modal)
 
-    @create_event.error
-    async def create_event_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You need Moderate Members permission.")
-
-
 async def setup(bot):
     await bot.add_cog(EventCog(bot))
