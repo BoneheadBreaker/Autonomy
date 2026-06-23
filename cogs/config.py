@@ -199,6 +199,31 @@ class ConfigCog(commands.Cog):
             f"{channel.mention}"
         )
 
+    @config.command(name="joinleave")
+    @commands.has_permissions(administrator=True)
+    async def config_joinleave(
+        self,
+        ctx,
+        channel: discord.TextChannel
+    ):
+        db.delete(
+            "joinleave_channel",
+            {
+                "guild_id": ctx.guild.id
+            }
+        )
+
+        db.add(
+            "joinleave_channel",
+            ctx.guild.id,
+            str(channel.id)
+        )
+
+        await ctx.send(
+            f"Join/Leave messages will be sent to "
+            f"{channel.mention}"
+        )
+
     @config.command(name="list")
     @commands.has_permissions(
         administrator=True
@@ -273,6 +298,30 @@ class ConfigCog(commands.Cog):
                             f" | Channel: "
                             f"{channel.mention}"
                         )
+
+            if module == "joinleave":
+
+                channel_rows = db.get(
+                    "joinleave_channel",
+                    {
+                        "guild_id": ctx.guild.id
+                    }
+                )
+
+                if channel_rows:
+
+                    channel_id = channel_rows[0][1]
+
+                    channel = ctx.guild.get_channel(
+                        int(channel_id)
+                    )
+
+                    if channel:
+
+                        extra = (
+                            f" | Channel: "
+                            f"{channel.mention}"
+            )
 
             lines.append(
                 f"{module}: "

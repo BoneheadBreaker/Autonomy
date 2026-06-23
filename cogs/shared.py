@@ -38,13 +38,30 @@ db.create_table("active_tickets", "guild_id INTEGER", "channel_id INTEGER", "own
 
 db.create_table("ticket_panels", "guild_id INTEGER", "channel_id INTEGER", "message_id INTEGER", "panel_message TEXT")
 
+db.create_table(
+    "memberflow",
+    "guild_id INTEGER PRIMARY KEY",
+    "join_channel INTEGER",
+    "leave_channel INTEGER",
+    "join_enabled INTEGER",
+    "leave_enabled INTEGER"
+)
+
+db.create_table(
+    "joinleave_channel",
+    "guild_id INTEGER PRIMARY KEY",
+    "channel_id TEXT"
+)
+
 CUSTOM_MODULES = [
     "logs",
     "logs.deleted_messages",
     "logs.edited_messages",
     "logs.member_join",
     "logs.member_remove",
-    "logs.invites"
+    "logs.invites",
+    "memberflow.join",
+    "memberflow.leave"
 ]
 
 def command_enabled(default=True):
