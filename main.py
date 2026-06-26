@@ -18,13 +18,15 @@ except Exception:
     pass
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+MOD_API_TOKEN = os.getenv("MOD_API_TOKEN")
 
 DB_PATH = os.getenv("DB_PATH", "bot.db")
 LOG_PATH = os.getenv("LOG_PATH", "./logs")
 
-# Optional safety check
 if not DISCORD_TOKEN:
     raise RuntimeError("DISCORD_TOKEN is not set in environment variables")
+if not MOD_API_TOKEN:
+    print("WARNING: MOD_API_TOKEN is not set in environment variables, mod api may be unusable")
 
 CONFIG = load_config()
 
@@ -43,10 +45,11 @@ class MyBot(commands.Bot):
             intents=intents
         )
 
-        # attach shared runtime config (useful in cogs)
+        # attach shared runtime config
         self.config = CONFIG
         self.db_path = DB_PATH
         self.log_path = LOG_PATH
+        self.mod_api_token = MOD_API_TOKEN 
 
     async def setup_hook(self):
 

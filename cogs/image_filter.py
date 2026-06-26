@@ -7,6 +7,15 @@ from PIL import Image, ImageFile
 import requests
 
 from io import BytesIO
+import httpx
+import sys, site
+
+print("EXEC:", sys.executable)
+print("VERSION:", sys.version)
+print("SITE:", site.getsitepackages())
+print("PATH:")
+for p in sys.path:
+    print(" ", p)
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -148,6 +157,54 @@ class ImageFilterCog(commands.Cog):
                     print(f"[ImageFilter] Delete failed: {e}")
 
                 return
+
+            else:
+                # Use modapi.xyz to check it
+                print(self.bot.mod_api_token)
+                headers = {
+                    "Authorization": f"Bearer {self.bot.mod_api_token}"
+                }
+
+                try:
+                    async with httpx.AsyncClient(timeout=15) as client:
+                        # Download the image into RAM
+                        image = await client.get(url)
+                        image.raise_for_status()
+
+                        # Send it to ModAPI
+                        response = await client.post(
+                            "https://api.modapi.xyz/v1/moderate/image/scam",
+                            headers=headers,
+                            files={
+                                "file": (
+                                    "image.png",
+                                    image.content,
+                                    image.headers.get("Content-Type", "application/octet-stream"),
+                                )
+                            },
+                        )
+
+                        response.raise_for_status()
+                        result = response.json()
+
+                    print(result)
+
+                    # Delete the message if ModAPI flagged it
+                    if result.get("flagged", False):
+                        await message.delete()
+                        print("[ImageFilter] Deleted (ModAPI flagged image)")
+
+                        return
+
+                except discord.Forbidden:
+                    print("[ImageFilter] Missing permission to delete the message.")
+
+                except httpx.HTTPError as e:
+                    print(f"[ImageFilter] ModAPI request failed: {e}")
+
+                except Exception as e:
+                    print(f"[ImageFilter] Unexpected error: {e}")
+            
 
 async def setup(bot):
     await bot.add_cog(
